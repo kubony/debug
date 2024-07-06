@@ -39,9 +39,8 @@ def should_include(file_path, patterns):
                 return False
     return True
 
-def collect_project_files(base_dir, output_dir='project_info'):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    abs_base_dir = os.path.abspath(os.path.join(script_dir, base_dir))
+def collect_project_files(base_dir='.', output_dir='project_info'):
+    script_dir = os.path.abspath(base_dir)
     abs_output_dir = os.path.join(script_dir, output_dir)
 
     if not os.path.exists(abs_output_dir):
@@ -52,7 +51,7 @@ def collect_project_files(base_dir, output_dir='project_info'):
     log_filename = os.path.join(abs_output_dir, 'project_log.txt')
     additional_ignore_path = os.path.join(script_dir, 'additional_ignore.txt')
 
-    gitignore_patterns = get_gitignore_patterns(abs_base_dir)
+    gitignore_patterns = get_gitignore_patterns(script_dir)
     additional_ignore_patterns = get_ignore_patterns(additional_ignore_path)
     patterns = list(set(gitignore_patterns + additional_ignore_patterns))
 
@@ -64,14 +63,14 @@ def collect_project_files(base_dir, output_dir='project_info'):
          open(detailed_filename, 'a', encoding='utf-8') as detailed_file, \
          open(log_filename, 'a', encoding='utf-8') as logfile:
          
-        for root, dirs, files in os.walk(abs_base_dir):
+        for root, dirs, files in os.walk(script_dir):
             if '.git' in root:
                 continue
             # Check directory patterns to remove excluded directories
-            dirs[:] = [d for d in dirs if should_include(os.path.relpath(os.path.join(root, d), abs_base_dir), patterns)]
+            dirs[:] = [d for d in dirs if should_include(os.path.relpath(os.path.join(root, d), script_dir), patterns)]
             for file in files:
                 file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, abs_base_dir)
+                relative_path = os.path.relpath(file_path, script_dir)
                 
                 if should_include(relative_path, patterns):
                     try:
@@ -88,19 +87,19 @@ def collect_project_files(base_dir, output_dir='project_info'):
                     logfile.write(f"Excluded by pattern: {relative_path}\n")
         
         # Write overview project structure
-        for root, dirs, files in os.walk(abs_base_dir):
+        for root, dirs, files in os.walk(script_dir):
             if '.git' in root:
                 continue
             # Check directory patterns to remove excluded directories
-            dirs[:] = [d for d in dirs if should_include(os.path.relpath(os.path.join(root, d), abs_base_dir), patterns)]
-            relative_path = os.path.relpath(root, abs_base_dir)
+            dirs[:] = [d for d in dirs if should_include(os.path.relpath(os.path.join(root, d), script_dir), patterns)]
+            relative_path = os.path.relpath(root, script_dir)
             if should_include(relative_path, patterns):
                 overview_file.write(f"Directory: {relative_path}\n")
                 overview_file.write("Contains:\n")
                 for dir in dirs:
                     overview_file.write(f"- {dir}\n")
                 for file in files:
-                    file_relative_path = os.path.relpath(os.path.join(root, file), abs_base_dir)
+                    file_relative_path = os.path.relpath(os.path.join(root, file), script_dir)
                     if should_include(file_relative_path, patterns):
                         overview_file.write(f"- {file}\n")
                 overview_file.write("\n")
@@ -108,4 +107,4 @@ def collect_project_files(base_dir, output_dir='project_info'):
                 logfile.write(f"Excluded directory by pattern: {relative_path}\n")
 
 if __name__ == "__main__":
-    collect_project_files(base_dir='/home/inkeun/projects/debug/')
+    collect_project_files()
