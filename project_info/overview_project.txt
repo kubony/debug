@@ -1,0 +1,26 @@
+Directory: .
+Contains:
+- src
+- utils
+- .git
+- .gitignore
+- karma.conf.js
+- .editorconfig
+- README.md
+- test.js
+- LICENSE
+- package.json
+- .travis.yml
+- test.node.js
+
+Directory: src
+Contains:
+- common.js
+- node.js
+- index.js
+- browser.js
+
+Directory: utils
+Contains:
+- collect_project_files.py
+

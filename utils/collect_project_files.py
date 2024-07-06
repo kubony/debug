@@ -54,6 +54,7 @@ def collect_project_files(base_dir='.', output_dir='project_info'):
     gitignore_patterns = get_gitignore_patterns(script_dir)
     additional_ignore_patterns = get_ignore_patterns(additional_ignore_path)
     patterns = list(set(gitignore_patterns + additional_ignore_patterns))
+    patterns.append(output_dir)  # Exclude the output directory
 
     open(overview_filename, 'w').close()
     open(detailed_filename, 'w').close()
