@@ -1,0 +1,18 @@
+Directory: .
+Contains:
+- src
+- karma.conf.js
+- .editorconfig
+- README.md
+- test.js
+- LICENSE
+- .travis.yml
+- test.node.js
+
+Directory: src
+Contains:
+- common.js
+- node.js
+- index.js
+- browser.js
+
